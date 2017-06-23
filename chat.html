@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project 1/Chat Room</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/tab.css">
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" charset="utf-8"></script>
+    <script src="assets/javascript/chat.js" charset="utf-8"></script>
+    <script src="assets/javascript/tab.js" charset="utf-8"></script>
+    <script src="asset/javascript/googlemaps.js" charset="utf-8"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqXXuWTEdNibG1W_c4V5ami9klELbcKzw&callback=initMap"></script> -->
+    <script>
+        var map, infoWindow;
+        function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 6
+          });
+          infoWindow = new google.maps.InfoWindow;
+
+         // Try HTML5 geolocation.
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              };
+
+              // infoWindow.setPosition(pos);
+              // infoWindow.setContent("Location found.");
+              // infoWindow.open(map);
+              // map.setCenter(pos);
+
+              publishLocationMessage(pos);
+
+            }, function() {
+              handleLocationError(true, infoWindow, map.getCenter());
+            });
+          } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+          }
+        }
+
+        var infoWindows = {};
+
+        function showFriendLocation(pos, userName, uid) {
+          console.log(infoWindows[uid]);
+          if (infoWindows[uid]==null) {
+            infoWindow = new google.maps.InfoWindow;
+            infoWindows[uid] = infoWindow;
+            console.log("NEW friend " + userName);
+          } else {
+            infoWindow = infoWindows[uid];
+            console.log("OLD friend " + userName);
+          }
+          infoWindow.setPosition(pos);
+          infoWindow.setContent(userName);
+          infoWindow.open(map);
+          map.setCenter(pos);
+        }
+
+       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+          infoWindow.setPosition(pos);
+          infoWindow.setContent(browserHasGeolocation ?
+                                'Error: The Geolocation service failed.' :
+                                'Error: Your browser doesn\'t support geolocation.');
+          infoWindow.open(map);
+        }
+    </script>
+
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUB3snXYRD-opeqdzx_qX8HoBnQZGhino&callback=initMap">
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+            initChat();
+
+            function initChat() {
+              populateUserName();
+            }
+
+            $(document).on("click", "#btnMainChat", publishMessage);
+
+            $(document).on("click", ".ChatChannel", switchActiveChat);
+            $(document).on("click", ".ChatUser", switchActiveChat);
+
+            $(document).on("click", "#newChannel", addNewChannel);
+      });
+    </script>
+</head>
+
+<body>
+	<div class = "container"> <!--Container -->
+    <div class="row"> <!-- 0th Row -->
+          <div class="col-xs-12">
+          		<nav class="navbar navbar-default">
+
+          			<!--back, next, and home buttons-->
+          			<ul class="nav navbar-nav padLeft">
+          				    <li><a href ="#"><img src = "assets/images/back.png"></a></li>
+          				    <li><a href="#"><img src = "assets/images/next.png"></a></li>
+          				    <li><a href="#"><img src = "assets/images/home.png"></a></li>
+          				 </ul>
+
+          			<!--search box and submit button-->
+          			<form class="form-group-inline down" role="search">
+          	  			<div class = "col-xs-4 padLeft2">
+          	   				<input id = "search" type="text" class="form-control-input input-sm" placeholder="Search">
+          	  				<button type="submit" class="btn btn-sm"><img src = "assets/images/search.png"></button>
+          	  			</div>
+          			</form>
+
+          			<!--sign up and log in buttons-->
+          			 <ul class="nav navbar-nav navbar-right padRight">
+          			   <li><a href="#"><span id = "logOut" class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          			 </ul>
+          		</nav>
+            </div>
+    </div> <!-- ROW 12  NAV BAR <ENDS-->
+      <div class="row"> <!-- 1ST ROW -->
+          <div class="col-xs-3"> <!-- Col-X3 - left -->
+            <div class="row">
+                <div class="col-xs-12">
+                  <div class ="panel panel-default blueBorder">
+                    <!--Panel heading/Channels-->
+                    <div class="panel-heading">CHANNELS
+                        <img id="newChannel" class="btn right" src ="assets/images/plus.png"></img>
+                    </div>
+
+                    <!--Panel Body/List Channels-->
+                    <div id = "channels" class = "panel-body">
+                      <ul>
+
+                        <div id="general_channel"  data-heading="#General" data-messagecount="0" class="box ChatChannel">
+                          <li class = "leftMarg">#General<span id="general_channel_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                        <div id="dogs_channel" data-heading="#Dogs" data-messagecount="0" class = "box ChatChannel">
+                          <li class = "leftMarg">#DOGS<span id="dogs_channel_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                        <div id="cats_channel" data-heading="#Cats" data-messagecount="0" class="box ChatChannel">
+                          <li class = "leftMarg">#CATS<span id="cats_channel_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                        <div id="maps_channel" data-heading="#maps" data-messagecount="0" class="box ChatChannel">
+                          <li class = "leftMarg">#MAPS<span id="maps_channel_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                      </ul>
+                    </div> <!--closes panel body-->
+                    </div> <!--closes primary channel panel-->
+                </div><!--closes column-->
+
+                <div class="col-xs-12">
+                  <div class = "panel panel-default blueBorder">
+                    <!--Panel heading/Direct Messages-->
+                    <div class = "panel-heading">DIRECT MESSAGES
+                        <img id = "newDirect" class = "btn right" src ="assets/images/plus.png">
+                    </div>
+
+                    <!--Panel body/Direct Messages-->
+                    <div class = "panel-body">
+                      <ul>
+                        <div id = "IFOljZj7McaqFqJvG8OYCAKUp182"  data-messagecount="0" data-heading="+Rajat Luthra" class = "box ChatUser">
+                          <li class = "leftMarg">Rajat Luthra<span id="IFOljZj7McaqFqJvG8OYCAKUp182_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                        <div id = "yq2Tr7xpbwTjeWQEeub0YUs6iVr1"  data-messagecount="0" data-heading="+Limor Q" class = "box ChatUser">
+                          <li class = "leftMarg">Limor Q<span id="yq2Tr7xpbwTjeWQEeub0YUs6iVr1_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                        <div id = "4ITH7CcqGlPsiG92YEeyAkIVbkS2"  data-messagecount="0" data-heading="+Rob Rev" class = "box ChatUser">
+                          <li class = "leftMarg">Rob Rev<span id="4ITH7CcqGlPsiG92YEeyAkIVbkS2_badge" class='badge badge-pill badge-primary'></span></li><br>
+                        </div>
+                      </ul>
+                    </div><!--closes panel body-->
+                    </div><!--closes panel-primary-->
+                </div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+              <div class="row">
+                <div class="col-xs-12">
+
+                  <!--panel heading-->
+                  <div class = "panel panel-primary">
+                    <div class = "panel-heading">
+                      <span id="ChatHeading">#General</span>
+                    </div>
+
+                    <!--panel body for chatmessages-->
+                    <div id = "messBox" class = "panel-body">
+                    </div>
+                  </div>
+                  <!--textarea-->
+            			<div class = "form-group drop padLeft">
+            			 <label class = "inline">Message:</label>
+
+            				<!--tool box for textarea-->
+            				<div class = "set">
+            					<button id = "bold" type="button" class="btn btn-default btn-sm">
+            						<img src = "assets/images/bold.png">
+            					</button>
+
+            					<button id = "italic" type="button" class="btn btn-default btn-sm">
+            						<img src = "assets/images/italic.png">
+            					</button>
+
+            					<button id = "underline" type="button" class="btn btn-default btn-sm">
+            						<img src = "assets/images/underline.png">
+            					</button>
+
+            					<button id = "font" type="button" class="btn btn-default btn-sm">
+            						<img src = "assets/images/font.png">
+            					</button>
+
+            					<button id = "emoji" type="button" class="btn btn-default btn-sm">
+            						<img src = "assets/images/emoji.png">
+            					</button>
+            				</div>
+
+                    <div id = "editTextBox">
+                      <nobr>
+                				  <!--text area-->
+                  				<textarea rows="3" id="txtMainChat" type="text"></textarea>
+
+                  				<!--submit button for text box-->
+                  				<img id = "btnMainChat" class = "btn up" src = "assets/images/submit.png">
+                      </nobr>
+                    </div>
+            			</div><!--closes textarea/form group-->
+
+                </div>
+              </div>
+          </div>
+          <div class="col-xs-3">
+              <div class="row">
+
+                <div class="col-xs-12">
+                  <!--create a panel for google maps-->
+        					<div  class = "panel panel-default blueBorder">
+        						<div class = "panel-heading">GOOGLE MAPS</div>
+        						<div id="mapholder" class = "panel-body">
+                        <div id="map" style="width:100%;height:100%;"></div>
+        						</div>
+        					</div><!--closes google maps panel-->
+                </div>
+              </div>
+          </div>
+      </div> <!-- 1ST ROW ends-->
+
+	</div><!--closes Container-->
+
+</body>
+
+</html>

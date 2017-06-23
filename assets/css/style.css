@@ -1,0 +1,151 @@
+body {
+	font-size: 1em;
+}
+
+#map {
+	color: red;
+}
+.container {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.navbar {
+	border-top: 3px solid black;
+}
+
+.box:hover {
+	background-color: #375a7f;
+}
+
+.padLeft {
+	margin-left: 5%;
+}
+
+.padLeft2 {
+	margin-left: 20%;
+}
+
+.right {
+	float: right;
+}
+
+.padRight {
+	margin-right: 4%;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.down {
+	margin-top: 1%;
+}
+
+h4 {
+	color: black;
+}
+
+.bgColor1 {
+	background-color: #303030;
+}
+
+.bgColor2 {
+	background-color: #375a7f;
+	overflow: auto;
+}
+
+.chat {
+	overflow: auto;
+	position: absolute;
+}
+
+.media {
+	background-color: floralwhite;
+	color: black;
+	padding-top: 1%;
+	border-bottom: 1px solid grey;
+	font-size: 1em;
+
+}
+
+.media-heading {
+	font-size: 1em;
+	font-weight: bold;
+	z-index: 10;
+}
+
+#message {
+    height: 10%;
+    padding-top: 2%;
+    padding-left: 2%;
+    margin-top: 2%;
+    font-size: 1.25em;
+}
+
+.peopleGroup {
+	margin-left: 5%;
+	display: inline;
+	float: right;
+}
+
+#numGroup {
+	display: inline;
+	float: right;
+}
+
+#files, #mock, #sub, #final, #settings {
+	color: white;
+	border: none;
+}
+
+.panel-heading{
+	overflow: auto;
+}
+
+.panel-primary > .panel-body {
+	overflow: auto;
+	height:450px;
+	line-height: 125%;
+}
+
+.panel-default > .panel-body {
+	height: 250px;
+}
+
+.scroll {
+	overflow: auto;
+	max-height: 550px;
+}
+
+.drop {
+	margin-top: 5%;
+}
+
+#txtMainChat {
+	width: 90%;
+	margin-top: 3%;
+	display: inline-block;
+}
+
+.set {
+	float: right;
+	margin-right: 10%;
+}
+
+.up {
+	margin-bottom: 7%;
+}
+
+.input-sm {
+	width: 45%;
+}
+
+.blueBorder {
+	border: 1px solid #375a7f;
+}
+
+#mapholder {
+	height: 450px;
+}
