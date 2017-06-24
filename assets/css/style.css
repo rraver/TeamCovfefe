@@ -2,6 +2,10 @@ body {
 	font-size: 1em;
 }
 
+h1 {
+	margin-bottom:5%;
+}
+
 #map {
 	color: red;
 }
@@ -95,11 +99,6 @@ h4 {
 	float: right;
 }
 
-#files, #mock, #sub, #final, #settings {
-	color: white;
-	border: none;
-}
-
 .panel-heading{
 	overflow: auto;
 }
@@ -112,11 +111,6 @@ h4 {
 
 .panel-default > .panel-body {
 	height: 250px;
-}
-
-.scroll {
-	overflow: auto;
-	max-height: 550px;
 }
 
 .drop {

@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Sample FirebaseUI App</title>
+    <link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -29,6 +31,7 @@
           firebase.auth.TwitterAuthProvider.PROVIDER_ID,
           firebase.auth.GithubAuthProvider.PROVIDER_ID,
           firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          firebase.auth.PhoneAuthProvider.PROVIDER_ID
         ],
         // Terms of service url.
         tosUrl: '<your-tos-url>'
@@ -43,7 +46,7 @@
   <body>
     <!-- The surrounding HTML is left untouched by FirebaseUI.
          Your app may use that space for branding, controls and other customizations.-->
-    <h1>Chat Chat Chat </h1>
+    <h1><center>Team Covfefe Login</center></h1>
     <div id="firebaseui-auth-container"></div>
   </body>
 </html>
